@@ -1,0 +1,15 @@
+D:\Sushi\Sushi\obj\Debug\Sushi.csproj.AssemblyReference.cache
+D:\Sushi\Sushi\obj\Debug\App.g.cs
+D:\Sushi\Sushi\obj\Debug\Sushi_MarkupCompile.cache
+D:\Sushi\Sushi\bin\Debug\Sushi.exe.config
+D:\Sushi\Sushi\bin\Debug\Sushi.exe
+D:\Sushi\Sushi\bin\Debug\Sushi.pdb
+D:\Sushi\Sushi\obj\Debug\MainWindow.baml
+D:\Sushi\Sushi\obj\Debug\MainWindow.g.cs
+D:\Sushi\Sushi\obj\Debug\Sushi.g.resources
+D:\Sushi\Sushi\obj\Debug\Sushi.Properties.Resources.resources
+D:\Sushi\Sushi\obj\Debug\Sushi.csproj.GenerateResource.cache
+D:\Sushi\Sushi\obj\Debug\Sushi.csproj.CoreCompileInputs.cache
+D:\Sushi\Sushi\obj\Debug\Sushi.exe
+D:\Sushi\Sushi\obj\Debug\Sushi.pdb
+D:\Sushi\Sushi\obj\Debug\Sushi.exe.config
