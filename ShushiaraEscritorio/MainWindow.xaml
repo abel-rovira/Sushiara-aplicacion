@@ -1,0 +1,458 @@
+﻿<Window x:Class="ShushiaraEscritorio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Shushiara Restaurante"
+        Width="1360"
+        Height="1564"
+        MinWidth="1120"
+        MinHeight="740"
+        Background="#F5F6F8"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Rojo" Color="#B91C1C"/>
+        <SolidColorBrush x:Key="RojoOscuro" Color="#8F1515"/>
+        <SolidColorBrush x:Key="Negro" Color="#111111"/>
+        <SolidColorBrush x:Key="Gris" Color="#6B7280"/>
+        <SolidColorBrush x:Key="Borde" Color="#DEE2E6"/>
+        <SolidColorBrush x:Key="FondoSuave" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="Verde" Color="#198754"/>
+        <SolidColorBrush x:Key="Dorado" Color="#B8944F"/>
+
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="BotonPrincipal" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource Rojo}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Rojo}"/>
+        </Style>
+
+        <Style x:Key="BotonContorno" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Foreground" Value="{StaticResource Rojo}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Rojo}"/>
+        </Style>
+
+        <Style x:Key="Caja" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Borde}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+
+        <Style x:Key="CajaOscura" TargetType="Border">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="BorderBrush" Value="#27272A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="22"/>
+        </Style>
+
+        <Style x:Key="BadgeRojo" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Rojo}"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="7,3"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+
+        <Style x:Key="EntradaTexto" TargetType="TextBox">
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="Padding" Value="11,7"/>
+            <Setter Property="BorderBrush" Value="#CED4DA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="EntradaCombo" TargetType="ComboBox">
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="Padding" Value="9,6"/>
+            <Setter Property="BorderBrush" Value="#CED4DA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <DataTemplate x:Key="PlantillaProducto">
+            <Border Style="{StaticResource Caja}" Padding="0" Margin="0,0,0,12">
+                <Grid MinHeight="150">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="132"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#E9ECEF" CornerRadius="6,0,0,6" ClipToBounds="True">
+                        <Image Source="{Binding UrlImagen}" Stretch="UniformToFill"/>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="16">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <WrapPanel VerticalAlignment="Top">
+                            <TextBlock Text="{Binding Nombre}" FontSize="17" FontWeight="Bold" Foreground="#111827"/>
+                            <Border Style="{StaticResource BadgeRojo}" Visibility="{Binding VisibilidadEtiqueta}">
+                                <TextBlock Text="{Binding Etiqueta}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                            <Border Style="{StaticResource BadgeRojo}" Background="#DC2626" Visibility="{Binding VisibilidadPicante}">
+                                <TextBlock Text="PICANTE" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </WrapPanel>
+                        <TextBlock Grid.Row="1" Text="{Binding Descripcion}" Foreground="{StaticResource Gris}" TextWrapping="Wrap" Margin="0,9,0,12" LineHeight="20"/>
+                        <Grid Grid.Row="2">
+                            <TextBlock Text="{Binding PrecioTexto}" FontWeight="Bold" FontSize="15" VerticalAlignment="Center"/>
+                            <Button Content="ANADIR" Tag="{Binding}" Click="AgregarProducto_Click" Style="{StaticResource BotonContorno}" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PlantillaGrupo">
+            <StackPanel>
+                <Grid Margin="0,28,0,10">
+                    <TextBlock Text="{Binding Nombre}" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding CantidadTexto}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource Gris}" FontWeight="SemiBold"/>
+                </Grid>
+                <Border Height="3" Background="{StaticResource Negro}" Margin="0,0,0,14"/>
+                <ItemsControl ItemsSource="{Binding Productos}" ItemTemplate="{StaticResource PlantillaProducto}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PlantillaCarrito">
+            <Border BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="0,0,0,10" Margin="0,0,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="108"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Nombre}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding LineaTexto}" Foreground="{StaticResource Gris}" FontSize="13"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="-" Width="30" Padding="0" Tag="{Binding}" Click="RestarProducto_Click"/>
+                        <TextBlock Text="{Binding Cantidad}" Width="34" TextAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Button Content="+" Width="30" Padding="0" Tag="{Binding}" Click="SumarProducto_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#111111" BorderBrush="{StaticResource Rojo}" BorderThickness="0,0,0,4" Padding="28,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="SHUSHIARA" Foreground="White" FontSize="28" FontWeight="Black" Margin="0,0,18,0"/>
+                    <Border Background="#212529" BorderBrush="#343A40" BorderThickness="1" CornerRadius="4" Padding="10,5" VerticalAlignment="Center">
+                        <TextBlock Text="Sushi fresco todos los dias" Foreground="#F8F9FA" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+                <TextBlock Text="Carrer de la Mar 24, Valencia - 600 123 456 - ara@gmail.com"
+                           Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold"/>
+            </Grid>
+        </Border>
+
+        <TabControl x:Name="Pestanas" Background="#F5F6F8">
+            <TabItem Header="Inicio">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="1349">
+                    <StackPanel>
+                        <Grid Height="520">
+                            <Grid.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#111111" Offset="0"/>
+                                    <GradientStop Color="#212529" Offset="0.58"/>
+                                    <GradientStop Color="#8F1515" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Grid.Background>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="900">
+                                <TextBlock Text="SUSHI TRADICIONAL CON ALMA MODERNA" Foreground="#E5E7EB" FontWeight="Bold" TextAlignment="Center"/>
+                                <TextBlock Text="FRESH IS&#x0A;BORING" Foreground="White" FontSize="92" FontWeight="Black" TextAlignment="Center" LineHeight="86"/>
+                                <TextBlock Text="Sushi preparado al momento, reservas en sala y pedidos a domicilio con una experiencia rapida, clara y cuidada."
+                                           Foreground="#F3F4F6" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Margin="0,22,0,0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                                    <Button Content="HACER PEDIDO" Style="{StaticResource BotonPrincipal}" Click="IrPedido_Click" Margin="0,0,12,0"/>
+                                    <Button Content="RESERVAR MESA" Style="{StaticResource BotonContorno}" Click="IrReservas_Click"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="48">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Caja}" Margin="0,0,16,0">
+                                <StackPanel>
+                                    <TextBlock Text="RESTAURANTE JAPONES" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                                    <TextBlock Text="Comida japonesa fresca todos los dias." FontSize="36" FontWeight="Black" TextWrapping="Wrap" Margin="0,8,0,14"/>
+                                    <TextBlock Text="Carta completa, reservas de mesa, recogida en local y entrega a domicilio. Todo organizado para atender pedidos y reservas desde un unico panel."
+                                               Foreground="{StaticResource Gris}" FontSize="17" TextWrapping="Wrap" LineHeight="28"/>
+                                </StackPanel>
+                            </Border>
+                            <Grid Grid.Column="1" Margin="16,0,0,0">
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource Caja}" Margin="0,0,12,12"><StackPanel><TextBlock Text="4,8/5" FontSize="38" FontWeight="Black"/><TextBlock Text="Valoracion media" Foreground="{StaticResource Gris}" FontWeight="SemiBold"/></StackPanel></Border>
+                                <Border Grid.Column="1" Style="{StaticResource Caja}" Margin="12,0,0,12"><StackPanel><TextBlock Text="30-45" FontSize="38" FontWeight="Black"/><TextBlock Text="Minutos entrega" Foreground="{StaticResource Gris}" FontWeight="SemiBold"/></StackPanel></Border>
+                                <Border Grid.Row="1" Style="{StaticResource Caja}" Margin="0,12,12,0"><StackPanel><TextBlock Text="12,00 EUR" FontSize="32" FontWeight="Black"/><TextBlock Text="Pedido minimo" Foreground="{StaticResource Gris}" FontWeight="SemiBold"/></StackPanel></Border>
+                                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Caja}" Margin="12,12,0,0"><StackPanel><TextBlock Text="00:00" FontSize="38" FontWeight="Black"/><TextBlock Text="Viernes y sabado" Foreground="{StaticResource Gris}" FontWeight="SemiBold"/></StackPanel></Border>
+                            </Grid>
+                        </Grid>
+
+                        <Grid Margin="48,0,48,48">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Caja}" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <Border Background="#FEE2E2" CornerRadius="4" Padding="10,5" HorizontalAlignment="Left" Margin="0,0,0,14">
+                                        <TextBlock Text="DOMICILIO" Foreground="{StaticResource Rojo}" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Text="Pedido rapido" FontSize="24" FontWeight="Black"/>
+                                    <TextBlock Text="Preparamos el pedido al momento y lo entregamos en 30-45 minutos dentro de la zona de reparto." Foreground="{StaticResource Gris}" TextWrapping="Wrap" LineHeight="22" Margin="0,10,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource Caja}" Margin="12,0">
+                                <StackPanel>
+                                    <Border Background="#DCFCE7" CornerRadius="4" Padding="10,5" HorizontalAlignment="Left" Margin="0,0,0,14">
+                                        <TextBlock Text="RECOGIDA" Foreground="{StaticResource Verde}" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Text="Listo para llevar" FontSize="24" FontWeight="Black"/>
+                                    <TextBlock Text="Sin coste de envio. Elige hora, pasa por el local y recoge tu bolsa preparada en barra." Foreground="{StaticResource Gris}" TextWrapping="Wrap" LineHeight="22" Margin="0,10,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Style="{StaticResource Caja}" Margin="12,0,0,0">
+                                <StackPanel>
+                                    <Border Background="#FEF3C7" CornerRadius="4" Padding="10,5" HorizontalAlignment="Left" Margin="0,0,0,14">
+                                        <TextBlock Text="RESERVAS" Foreground="#92400E" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Text="Mesa confirmada" FontSize="24" FontWeight="Black"/>
+                                    <TextBlock Text="Reserva sala, terraza o barra sushi. Te avisamos si hay que ajustar aforo o horario." Foreground="{StaticResource Gris}" TextWrapping="Wrap" LineHeight="22" Margin="0,10,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#111111" Padding="48">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.1*"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="HORARIOS" Foreground="{StaticResource Dorado}" FontWeight="Bold"/>
+                                    <TextBlock Text="Servicio todos los dias" Foreground="White" FontSize="32" FontWeight="Black" Margin="0,6,0,8"/>
+                                    <TextBlock Text="Comida, cena, reservas en local, recogida y pedidos a domicilio." Foreground="#D1D5DB" TextWrapping="Wrap" Width="420"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Lunes a jueves" Foreground="#9CA3AF" FontWeight="SemiBold"/>
+                                    <TextBlock Text="13:00 - 16:00 / 20:00 - 23:30" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,4,0,18"/>
+                                    <TextBlock Text="Viernes y sabado" Foreground="#9CA3AF" FontWeight="SemiBold"/>
+                                    <TextBlock Text="13:00 - 16:30 / 20:00 - 00:00" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Domingo" Foreground="#9CA3AF" FontWeight="SemiBold"/>
+                                    <TextBlock Text="13:00 - 16:00 / 20:00 - 23:00" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,4,0,18"/>
+                                    <TextBlock Text="Ubicacion" Foreground="#9CA3AF" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Carrer de la Mar 24, Valencia" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Carta y pedido">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Grid Height="300" Background="#111111">
+                            <Grid Margin="48,34">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="520"/></Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Bottom">
+                                    <TextBlock Text="CARTA ONLINE" Foreground="{StaticResource Rojo}" FontWeight="Bold"/>
+                                    <TextBlock Text="PEDIDO A&#x0A;DOMICILIO" Foreground="White" FontSize="70" FontWeight="Black" LineHeight="70"/>
+                                    <TextBlock Text="Elige sushi, ramen, sopas, noodles, postres y bebidas. Cocina japonesa preparada al momento." Foreground="#E5E7EB" FontSize="18" Width="660" TextWrapping="Wrap" Margin="0,16,0,0"/>
+                                </StackPanel>
+                                <Grid Grid.Column="1" Height="86" VerticalAlignment="Bottom" Background="#F8F9FA">
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <StackPanel Margin="18" VerticalAlignment="Center"><TextBlock Text="ENTREGA" Foreground="{StaticResource Gris}" FontSize="12" FontWeight="Bold"/><TextBlock Text="30-45 min" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel>
+                                    <Border Grid.Column="1" BorderBrush="{StaticResource Borde}" BorderThickness="1,0,1,0"><StackPanel Margin="18" VerticalAlignment="Center"><TextBlock Text="MINIMO" Foreground="{StaticResource Gris}" FontSize="12" FontWeight="Bold"/><TextBlock Text="12,00 EUR" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel></Border>
+                                    <StackPanel Grid.Column="2" Margin="18" VerticalAlignment="Center"><TextBlock Text="VALORACION" Foreground="{StaticResource Gris}" FontSize="12" FontWeight="Bold"/><TextBlock Text="4,8/5" FontWeight="Bold" Margin="0,6,0,0"/></StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="48">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="205"/><ColumnDefinition/><ColumnDefinition Width="340"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="CATEGORIAS" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold" Margin="0,0,0,14"/>
+                                <ItemsControl x:Name="ListaCategorias"><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding}" Tag="{Binding}" Click="Categoria_Click" HorizontalContentAlignment="Left" Margin="0,0,0,8" Background="White" BorderBrush="{StaticResource Borde}"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="24,0">
+                                <Grid Margin="0,0,0,12">
+                                    <StackPanel><TextBlock Text="MENU COMPLETO" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/><TextBlock Text="Nuestra carta" FontSize="32" FontWeight="SemiBold"/></StackPanel>
+                                    <TextBox x:Name="Buscador" Style="{StaticResource EntradaTexto}" Width="370" HorizontalAlignment="Right" VerticalAlignment="Center" TextChanged="Buscador_TextChanged" ToolTip="Buscar sushi, combo, bebida..."/>
+                                </Grid>
+                                <Grid Margin="0,0,0,18">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="#FFFFFF" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="0,0,8,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Arroz preparado a diario" FontWeight="Bold"/>
+                                            <TextBlock Text="Textura suave y punto exacto de vinagre." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="8,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Pescado fresco" FontWeight="Bold"/>
+                                            <TextBlock Text="Cortes limpios para nigiri, sashimi y rolls." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="8,0,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Salsas caseras" FontWeight="Bold"/>
+                                            <TextBlock Text="Ponzu, teriyaki, spicy mayo y kabayaki." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                                <ItemsControl x:Name="ListaGrupos" ItemTemplate="{StaticResource PlantillaGrupo}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <Border Style="{StaticResource Caja}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,16"><StackPanel><TextBlock Text="TU CARRITO" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/><TextBlock Text="Pedido" FontSize="25" FontWeight="SemiBold"/></StackPanel><Border Width="34" Height="34" Background="{StaticResource Negro}" CornerRadius="4" HorizontalAlignment="Right"><TextBlock x:Name="TextoUnidades" Text="0" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></Grid>
+                                        <ItemsControl x:Name="ListaCarrito" ItemTemplate="{StaticResource PlantillaCarrito}"/>
+                                        <TextBlock x:Name="TextoCarritoVacio" Text="El carrito esta vacio." Foreground="{StaticResource Gris}" Margin="0,0,0,14"/>
+                                        <Border Height="2" Background="{StaticResource Negro}" Margin="0,0,0,14"/>
+                                        <Grid Margin="0,0,0,8"><TextBlock Text="Subtotal"/><TextBlock x:Name="TextoSubtotal" Text="0,00 EUR" HorizontalAlignment="Right" FontWeight="Bold"/></Grid>
+                                        <Grid Margin="0,0,0,8"><TextBlock Text="Envio"/><TextBlock x:Name="TextoEnvio" Text="0,00 EUR" HorizontalAlignment="Right" FontWeight="Bold"/></Grid>
+                                        <Grid><TextBlock Text="Total" FontSize="19" FontWeight="Black"/><TextBlock x:Name="TextoTotal" Text="0,00 EUR" HorizontalAlignment="Right" FontSize="19" FontWeight="Black"/></Grid>
+                                        <Border Background="#F8F9FA" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Resumen del servicio" FontWeight="Bold"/>
+                                                <TextBlock Text="Domicilio suma 5,00 EUR. Recogida en local no tiene coste." Foreground="{StaticResource Gris}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource Caja}" Margin="0,16,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="DATOS DE ENTREGA" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                                        <TextBlock Text="Finalizar" FontSize="25" FontWeight="SemiBold" Margin="0,2,0,16"/>
+                                        <Grid Margin="0,0,0,16"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><RadioButton x:Name="RadioDomicilio" Content="A domicilio" IsChecked="True" Checked="TipoEntrega_Changed" FontWeight="SemiBold"/><RadioButton x:Name="RadioRecogida" Grid.Column="1" Content="Recogida" Checked="TipoEntrega_Changed" FontWeight="SemiBold"/></Grid>
+                                        <TextBlock Text="Nombre"/><TextBox x:Name="PedidoNombre" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/>
+                                        <TextBlock Text="Telefono"/><TextBox x:Name="PedidoTelefono" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/>
+                                        <TextBlock Text="Direccion"/><TextBox x:Name="PedidoDireccion" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/>
+                                        <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,6,0"><TextBlock Text="Fecha"/><DatePicker x:Name="PedidoFecha" MinHeight="42" Margin="0,4,0,0" SelectedDateChanged="PedidoFecha_SelectedDateChanged"/></StackPanel><StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="Hora"/><ComboBox x:Name="PedidoHora" Style="{StaticResource EntradaCombo}" Margin="0,4,0,0"/></StackPanel></Grid>
+                                        <TextBlock Text="Pago"/><ComboBox x:Name="PedidoPago" Style="{StaticResource EntradaCombo}" Margin="0,4,0,12"><ComboBoxItem Content="Tarjeta"/><ComboBoxItem Content="Bizum"/><ComboBoxItem Content="Efectivo"/></ComboBox>
+                                        <Border Background="#F8F9FA" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12"><StackPanel><TextBlock Text="PAGO INFORMATIVO" Foreground="{StaticResource Rojo}" FontSize="12" FontWeight="Bold"/><TextBlock Text="No se realiza ningun cargo real." FontWeight="SemiBold"/></StackPanel></Border>
+                                        <TextBlock Text="Notas"/><TextBox x:Name="PedidoNotas" Style="{StaticResource EntradaTexto}" Height="70" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,4,0,16"/>
+                                        <Button Content="ENVIAR PEDIDO" Style="{StaticResource BotonPrincipal}" Click="EnviarPedido_Click"/>
+                                        <TextBlock x:Name="MensajePedido" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,14,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Reservas">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="48">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="0.8*"/><ColumnDefinition Width="1.2*"/></Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource Caja}" Margin="0,0,18,0">
+                            <StackPanel>
+                                <TextBlock Text="RESERVA ONLINE" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                                <TextBlock Text="Mesa en Shushiara" FontSize="42" FontWeight="Black" Margin="0,6,0,14"/>
+                                <TextBlock Text="Ven a disfrutar sushi fresco en sala, terraza o barra. La reserva no tiene pago previo y queda pendiente de confirmacion." Foreground="{StaticResource Gris}" FontSize="17" TextWrapping="Wrap" LineHeight="28"/>
+                                <Border Background="#F8F9FA" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,24,0,0"><StackPanel><TextBlock Text="CONDICIONES DE RESERVA" Foreground="{StaticResource Rojo}" FontWeight="Bold"/><TextBlock Text="Elige fecha, hora, numero de personas y zona. Confirmamos la mesa por telefono si hace falta." TextWrapping="Wrap"/></StackPanel></Border>
+                                <Grid Margin="0,18,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Border BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Sala" FontWeight="Bold"/>
+                                            <TextBlock Text="Mesas tranquilas para comidas, cenas y celebraciones pequenas." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Row="1" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Terraza" FontWeight="Bold"/>
+                                            <TextBlock Text="Disponible segun clima y aforo del dia." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Row="2" BorderBrush="{StaticResource Borde}" BorderThickness="1" CornerRadius="6" Padding="14">
+                                        <StackPanel>
+                                            <TextBlock Text="Barra sushi" FontWeight="Bold"/>
+                                            <TextBlock Text="Para ver la preparacion y pedir piezas al momento." Foreground="{StaticResource Gris}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource Caja}">
+                            <StackPanel>
+                                <TextBlock Text="DATOS DE RESERVA" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                                <TextBlock Text="Reservar mesa" FontSize="34" FontWeight="Black" Margin="0,2,0,18"/>
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,8,0"><TextBlock Text="Nombre"/><TextBox x:Name="ReservaNombre" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/><TextBlock Text="Email"/><TextBox x:Name="ReservaEmail" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/><TextBlock Text="Fecha"/><DatePicker x:Name="ReservaFecha" MinHeight="42" Margin="0,4,0,12" SelectedDateChanged="ReservaFecha_SelectedDateChanged"/><TextBlock Text="Personas"/><TextBox x:Name="ReservaPersonas" Text="2" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/></StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="8,0,0,0"><TextBlock Text="Telefono"/><TextBox x:Name="ReservaTelefono" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/><TextBlock Text="Zona"/><ComboBox x:Name="ReservaZona" Style="{StaticResource EntradaCombo}" Margin="0,4,0,12"><ComboBoxItem Content="Sala"/><ComboBoxItem Content="Terraza"/><ComboBoxItem Content="Barra sushi"/></ComboBox><TextBlock Text="Hora"/><ComboBox x:Name="ReservaHora" Style="{StaticResource EntradaCombo}" Margin="0,4,0,12"/><TextBlock Text="Ocasion"/><TextBox x:Name="ReservaOcasion" Style="{StaticResource EntradaTexto}" Margin="0,4,0,12"/></StackPanel>
+                                </Grid>
+                                <TextBlock Text="Notas"/><TextBox x:Name="ReservaNotas" Style="{StaticResource EntradaTexto}" Height="86" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,4,0,18"/>
+                                <Button Content="ENVIAR RESERVA" Style="{StaticResource BotonPrincipal}" Click="EnviarReserva_Click"/>
+                                <TextBlock x:Name="MensajeReserva" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,14,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Administracion">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="48">
+                        <TextBlock Text="ACCESO INTERNO" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                        <TextBlock Text="Gestion de pedidos y reservas" FontSize="42" FontWeight="Black" Margin="0,4,0,24"/>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Caja}" Margin="0,0,12,22"><StackPanel><TextBlock Text="PEDIDOS" Foreground="{StaticResource Gris}" FontWeight="Bold"/><TextBlock x:Name="ContadorPedidos" Text="0" FontSize="42" FontWeight="Black"/></StackPanel></Border>
+                            <Border Grid.Column="1" Style="{StaticResource Caja}" Margin="12,0,12,22"><StackPanel><TextBlock Text="RESERVAS" Foreground="{StaticResource Gris}" FontWeight="Bold"/><TextBlock x:Name="ContadorReservas" Text="0" FontSize="42" FontWeight="Black"/></StackPanel></Border>
+                            <Border Grid.Column="2" Style="{StaticResource Caja}" Margin="12,0,0,22"><StackPanel><TextBlock Text="SERVICIO" Foreground="{StaticResource Gris}" FontWeight="Bold"/><TextBlock Text="Abierto" FontSize="42" FontWeight="Black"/></StackPanel></Border>
+                        </Grid>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Caja}" Margin="0,0,14,0"><StackPanel><TextBlock Text="Pedidos recibidos" FontSize="28" FontWeight="Black" Margin="0,0,0,14"/><ItemsControl x:Name="ListaPedidosAdmin"/></StackPanel></Border>
+                            <Border Grid.Column="1" Style="{StaticResource Caja}" Margin="14,0,0,0"><StackPanel><TextBlock Text="Reservas recibidas" FontSize="28" FontWeight="Black" Margin="0,0,0,14"/><ItemsControl x:Name="ListaReservasAdmin"/></StackPanel></Border>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Informacion">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="48" Width="950">
+                        <TextBlock Text="INFORMACION DEL LOCAL" Foreground="{StaticResource Rojo}" FontSize="13" FontWeight="Bold"/>
+                        <TextBlock Text="Shushiara por dentro" FontSize="42" FontWeight="Black" Margin="0,4,0,18"/>
+                        <TextBlock Text="Shushiara centraliza la carta, los pedidos, las reservas y el seguimiento interno en una sola aplicacion. La carta esta organizada por categorias y el equipo puede revisar pedidos y reservas desde administracion." Foreground="{StaticResource Gris}" FontSize="18" TextWrapping="Wrap" LineHeight="30"/>
+                        <TextBlock Text="El pago es informativo y no realiza cargos reales. Las reservas quedan pendientes de confirmacion y los horarios se ajustan al dia elegido." TextWrapping="Wrap" FontSize="18" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
